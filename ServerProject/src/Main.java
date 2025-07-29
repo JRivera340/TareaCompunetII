@@ -8,41 +8,48 @@ public class Main {
     public static void main(String[] args) throws IOException {
         //192.168.131.37
 
+
         var server = new ServerSocket(8080);
-        System.out.println("Servidor Escuchando");
 
-        var socket = server.accept();
+        var isAlive = true;
 
-        System.out.println("Cliente Conectado");
+        while(isAlive){
+            System.out.println("Servidor Escuchando");
 
-        //Respuesta
+            var socket = server.accept();
 
-        var os = socket.getOutputStream();
-        var in = socket.getInputStream();
+            System.out.println("Cliente Conectado");
 
-        var writer = new BufferedWriter(new OutputStreamWriter(os));
+            //Respuesta
 
-        var reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            var os = socket.getOutputStream();
+            var in = socket.getInputStream();
 
-        String line;
-        while ((line = reader.readLine()) != null && !line.isEmpty()){
-            System.out.println(line);
-            
+            var writer = new BufferedWriter(new OutputStreamWriter(os));
+
+            var reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null && !line.isEmpty()){
+                System.out.println(line);
+
+            }
+
+            writer.write("HTTP/1.0 200 OK\r\n");
+            writer.write("Content-Type: text/html\r\n");
+            writer.write("Content-Length: 34\r\n");
+            writer.write("Connection: close\r\n");
+            writer.write("\r\n");
+            writer.write("<html><body>Hola Mundo</body></html>");
+
+            writer.flush();
+
+            writer.close();
+            socket.close();
         }
-
-        writer.write("HTTP/1.0 200 OK\r\n");
-        writer.write("Content-Type: text/html\r\n");
-        writer.write("Content-Length: 34\r\n");
-        writer.write("Connection: close\r\n");
-        writer.write("\r\n");
-        writer.write("<html><body>Hola Mundo</body></html>");
-
-        writer.flush();
-        
-        writer.close();
-        socket.close();
         server.close();
+
     }
 
-    //Terminar servidor multihilos para el jueves
+    //Terminar servidor multihilos para el jueves, implementar hilos.
 }
